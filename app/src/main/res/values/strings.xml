@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name" translatable="false">SPACE Beta</string>
+
+    <string name="title_home">SPACE</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_lightC">Light Control</string>
+    <string name="title_fanC">Fan Control</string>
+    <string name="title_plugC">Plug Control</string>
+    <string name="title_door_lockC">Door Lock Control</string>
+    <string name="title_windowC">Window Control</string>
+    <string name="title_device_setup">Setup</string>
+    <string name="title_connection_wizerd">Setup</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_trouble">Troubleshooting</string>
+    <string name="title_licence">Licences</string>
+
+    <string name="action_home">Home</string>
+    <string name="action_connection">Connection</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_quit">Quit</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="nav_section_header_others">OTHERS</string>
+
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_controls">Controls</string>
+    <string name="nav_lightC">Light Control</string>
+    <string name="nav_fanC">Fan Control</string>
+    <string name="nav_plugC">Plug Control</string>
+    <string name="nav_door_lockC">Door Lock Control</string>
+    <string name="nav_windowC">Window Control</string>
+    <string name="nav_device_setup">Setup</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_trouble">Troubleshooting</string>
+    <string name="nav_licence">Licences</string>
+
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_connected">Connected to %1$s</string>
+    <string name="no_bluetooth">Sorry, You can not use this app in your device because bluetooth is not available on this device.</string>
+    <string name="paired_devices">Choose a paired Bluetooth device</string>
+
+    <string name="btState_Text_on">Bluetooth is ON</string>
+    <string name="btState_Text_Ton">Bluetooth is turning on…</string>
+    <string name="btState_Text_off">Bluetooth is OFF</string>
+    <string name="btState_Text_Toff">Bluetooth is turning off…</string>
+
+    <string name="under_development">Feature is Under Development…</string>
+    <string name="under_development_desc">This feature is under development. We will add this feature in our near future updates.
+        Please always update to the latest version of this software to enjoy all the exciting features!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="tab_new_conn_type">Connection type</string>
+    <string name="tab_new_pair">Pair</string>
+    <string name="tab_new_connect">Connect and Authenticate</string>
+    <string name="tab_new_dp_name">Display names</string>
+    <string name="tab_new_setup">Port Setup</string>
+    <string name="tab_next">Next</string>
+    <string name="tab_prev">Previous</string>
+    <string name="tab_finish">Submit order</string>
+</resources>

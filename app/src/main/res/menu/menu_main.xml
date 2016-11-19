@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/nav_dashboard"
+        android:id="@+id/action_dashboard"
+        app:showAsAction="always"/>
+
+    <item
+        android:title="Home"
+        android:id="@+id/action_connection"
+        android:icon="@drawable/ic_bluetooth_disabled"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/change_log"
+        android:title="Log"
+        android:icon="@drawable/ic_change_log"
+        app:showAsAction="always" />
+
+</menu>

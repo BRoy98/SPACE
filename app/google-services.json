@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "599072637290",
+    "firebase_url": "https://space-6fa5c.firebaseio.com",
+    "project_id": "space-6fa5c",
+    "storage_bucket": "space-6fa5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599072637290:android:c9783b12f63ccf76",
+        "android_client_info": {
+          "package_name": "com.hometsolutions.space"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599072637290-cae81e59l11q52ar39ivje92crccciut.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hometsolutions.space",
+            "certificate_hash": "48C2C62FE5C92042E62711EA81BA8CC943720737"
+          }
+        },
+        {
+          "client_id": "599072637290-1qo1dje7cds8a1ee721pntvo9tdvt2cf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ6hTaIWTjLOwtNtLRQSucyZddnQNjbUI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599072637290-1qo1dje7cds8a1ee721pntvo9tdvt2cf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
