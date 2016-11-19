@@ -120,19 +120,11 @@ public class NewConnectionActivity extends AppCompatActivity implements
                 if (mPager.getCurrentItem() == mCurrentPageSequence.size()) {
 
                     //On finish
-                    MaterialDialog dialog = new MaterialDialog.Builder(getApplicationContext())
-                            .title(" Details")
-                            .customView(R.layout.layout_about_fan_dialog, true)
-                            .show();
-                    View dialogview = dialog.getCustomView();
-                    TextView DetailsName = (TextView) view.findViewById(R.id.fanDetailsName);
-                    TextView DetailsRoom = (TextView) view.findViewById(R.id.fanDetailsRoom);
-                    TextView DetailsDate = (TextView) view.findViewById(R.id.fanDetailsDate);
-                    TextView DetailsID = (TextView) view.findViewById(R.id.fanDetailsID);
-                    DetailsName.setText("");
-                    DetailsRoom.setText("");
-                    DetailsDate.setText("");
-                    DetailsID.setText("");
+/*
+                    1. Fixed license files
+                    2. Get 'Display Dame' data at the end of the wizard (found how to get data at the end of the wizard)*/
+
+                    String dpName = mWizardModel.findByKey("Six ports:Display Name").getData().getString("dp_name");
 
                 } else {
                     if (mEditingAfterReview) {

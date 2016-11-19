@@ -45,31 +45,29 @@ public class ConnectionWizardModel extends AbstractWizardModel {
                 new BranchPage(this, "Connection Type")
 
                         .addBranch("Setup New Device",
-                                new DisplayNamePage(this, "Display Name").setRequired(true),
+                                //new DisplayNamePage(this, "Display Name").setRequired(true),
 
-                                new SingleFixedChoicePage(this, "Bread").setChoices("White",
-                                        "Wheat", "Rye", "Pretzel", "Ciabatta")
-                                        .setRequired(true),
+                                new BranchPage(this, "Device Type")
 
-                                new MultipleFixedChoicePage(this, "Meats").setChoices(
-                                        "Pepperoni", "Turkey", "Ham", "Pastrami", "Roast Beef",
-                                        "Bologna"),
-
-                                new MultipleFixedChoicePage(this, "Veggies").setChoices(
-                                        "Tomatoes", "Lettuce", "Onions", "Pickles",
-                                        "Cucumbers", "Peppers"),
-
-                                new MultipleFixedChoicePage(this, "Cheeses").setChoices(
-                                        "Swiss", "American", "Pepperjack", "Muenster",
-                                        "Provolone", "White American", "Cheddar", "Bleu"),
-
-                                new BranchPage(this, "Toasted?")
-                                        .addBranch(
-                                                "Yes",
+                                        .addBranch("Six ports",
+                                                new DisplayNamePage(this, "Display Name").setRequired(true),
                                                 new SingleFixedChoicePage(this, "Toast time")
                                                         .setChoices("30 seconds", "1 minute",
-                                                                "2 minutes")).addBranch("No")
-                                        .setValue("No"))
+                                                                "2 minutes").setRequired(true)
+                                        )
+                                        .addBranch("Eight ports",
+                                                new DisplayNamePage(this, "Display Name").setRequired(true),
+                                                new SingleFixedChoicePage(this, "Toast time")
+                                                        .setChoices("30 seconds", "1 minute",
+                                                                "2 minutes").setRequired(true)
+                                        )
+                                        .addBranch("Ten ports",
+                                        new DisplayNamePage(this, "Display Name").setRequired(true),
+                                        new SingleFixedChoicePage(this, "Toast time")
+                                                .setChoices("30 seconds", "1 minute",
+                                                        "2 minutes").setRequired(true)
+                                        ).setRequired(true)
+                        )
 
                         .addBranch("Add Existing Device",
 
@@ -81,7 +79,8 @@ public class ConnectionWizardModel extends AbstractWizardModel {
                                 new SingleFixedChoicePage(this, "Dressing").setChoices(
                                         "No dressing", "Balsamic", "Oil & vinegar",
                                         "Thousand Island", "Italian").setValue("No dressing"),
-                                new NumberPage(this, "How Many Salads?").setRequired(true))
+                                new NumberPage(this, "How Many Salads?").setRequired(true)
+                        )
 
                         .addBranch("Restore Device",
 
@@ -93,10 +92,8 @@ public class ConnectionWizardModel extends AbstractWizardModel {
                                 new SingleFixedChoicePage(this, "Dressing").setChoices(
                                         "No dressing", "Balsamic", "Oil & vinegar",
                                         "Thousand Island", "Italian").setValue("No dressing"),
-                                new NumberPage(this, "How Many Salads?").setRequired(true))
-                        .setRequired(true),
-                new TextPage(this, "Comments").setRequired(true)
-
-                        .setRequired(true));
+                                new NumberPage(this, "How Many Salads?").setRequired(true)
+                        ).setRequired(true)
+        );
     }
 }

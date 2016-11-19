@@ -2,6 +2,7 @@ package com.hometsolutions.space.Wizerd.UI;
 
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tech.freak.wizardpager.model.ModelCallbacks;
 import com.tech.freak.wizardpager.model.Page;
@@ -24,6 +25,7 @@ public class DisplayNamePage extends Page {
     @Override
     public void getReviewItems(ArrayList<ReviewItem> arrayList) {
         arrayList.add(new ReviewItem("Display name", mData.getString(DPNAME_DATA_KEY), getKey(), -1));
+        Log.i("SPACE - getKey:DpNamePg", getKey());
     }
 
     @Override

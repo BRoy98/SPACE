@@ -30,7 +30,7 @@ import android.view.MenuItem;
 import com.hometsolutions.space.Adapters.*;
 import com.hometsolutions.space.R;
 
-public class EditComponentsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class  EditComponentsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     public String roomName;
     public int roomID;
