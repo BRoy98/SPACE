@@ -16,10 +16,10 @@
     <color name="eighty_percent_transparency_white">#CCffffff</color>
     <color name="ninty_percent_transparency_white">#E6ffffff</color>
     <color name="ninty_five_percent_transparency_white">#F2ffffff</color>
+    <color name="hundred_percent_transparency_white">#FFffffff</color>
 
     <color name="fifty_percent_transparency_primary">#80FEC400</color>
     <color name="fifty_percent_transparency_darker_primary_dark">#80FF9D22</color>
-
     <color name="black_semi_transparent">#B2000000</color>
 </resources>
 

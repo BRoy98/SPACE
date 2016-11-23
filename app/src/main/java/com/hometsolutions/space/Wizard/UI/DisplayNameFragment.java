@@ -19,7 +19,7 @@
  *
  ****************************************************************************************/
 
-package com.hometsolutions.space.Wizerd.UI;
+package com.hometsolutions.space.Wizard.UI;
 
 
 import android.app.Activity;
@@ -86,6 +86,7 @@ public class DisplayNameFragment extends Fragment {
 
         return rootView;
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

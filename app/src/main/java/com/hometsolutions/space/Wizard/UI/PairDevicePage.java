@@ -17,11 +17,14 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.hometsolutions.space.Wizerd.UI;
+package com.hometsolutions.space.Wizard.UI;
 
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
+import com.hometsolutions.space.Activitys.NewConnectionActivity;
 import com.tech.freak.wizardpager.model.ModelCallbacks;
+import com.tech.freak.wizardpager.model.ImagePage;
 import com.tech.freak.wizardpager.model.Page;
 import com.tech.freak.wizardpager.model.ReviewItem;
 
@@ -29,17 +32,28 @@ import java.util.ArrayList;
 
 public class PairDevicePage extends Page {
 
-    protected PairDevicePage(ModelCallbacks callbacks, String title) {
+    boolean isConnected = false;
+    public static final String CONNECT_DATA_KEY = "connect_state";
+    PairDeviceFragment pairDeviceFragment;
+
+    public PairDevicePage(ModelCallbacks callbacks, String title) {
         super(callbacks, title);
+            pairDeviceFragment = new PairDeviceFragment();
     }
 
     @Override
     public Fragment createFragment() {
-        return null;
+            return pairDeviceFragment.create(getKey());
     }
 
     @Override
     public void getReviewItems(ArrayList<ReviewItem> arrayList) {
+        arrayList.add(new ReviewItem("Pairing", "Successful", getKey(), -1));
+    }
+
+    @Override
+    public boolean isCompleted() {
+        return isConnected;
 
     }
 }

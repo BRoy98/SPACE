@@ -1,21 +1,18 @@
 /*****************************************************************************************
- *
- *                       Copyright (C) 2016 Bishwajyoti Roy
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *
+ * Copyright (C) 2016 Bishwajyoti Roy
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************************/
 
 package com.hometsolutions.space.Fragments;
@@ -23,6 +20,7 @@ package com.hometsolutions.space.Fragments;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +29,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.hometsolutions.space.Adapters.*;
 import com.hometsolutions.space.Activitys.*;
@@ -40,7 +40,7 @@ import com.hometsolutions.space.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SetupFragment extends Fragment  implements View.OnClickListener {
+public class SetupFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton fabSetup;
     public mRoomAdapterEditRooms adapter;
     public RecyclerView recyclerView;
@@ -64,7 +64,7 @@ public class SetupFragment extends Fragment  implements View.OnClickListener {
         recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view_edit);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadAdapter();
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -72,7 +72,7 @@ public class SetupFragment extends Fragment  implements View.OnClickListener {
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 Log.i("RE SCROLL", Integer.toString(dy));
             }
         });
@@ -99,10 +99,50 @@ public class SetupFragment extends Fragment  implements View.OnClickListener {
         int id = v.getId();
         switch (id) {
             case R.id.fab_setup:
-                NewConnectionActivity nc = new NewConnectionActivity();
-                Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                Intent intent = new Intent(getContext(),nc.getClass());
-                getContext().startActivity(intent, bndlanimation);
+                if (mainActivity.mBluetoothAdapter != null) {
+                    if (mainActivity.mBluetoothAdapter.isEnabled()) {
+                        NewConnectionActivity nc = new NewConnectionActivity();
+                        Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                        Intent intent = new Intent(getContext(), nc.getClass());
+                        getContext().startActivity(intent, bndlanimation);
+                    } else {
+                        new MaterialDialog.Builder(mainActivity)
+                                .title("Enable Bluetooth")
+                                .content("In order to connect to a device, you need to " +
+                                        "enable bluetooth. Do you want to enable bluetooth now?")
+                                .positiveText("Enable")
+                                .negativeText("No, Thanks")
+                                .onAny(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        Log.i("Press", which.toString());
+                                        switch (which.toString()) {
+                                            case "POSITIVE":
+                                                try {
+                                                    if (!mainActivity.mBluetoothAdapter.isEnabled()) {
+                                                        mainActivity.mBluetoothAdapter.enable();
+                                                    }
+                                                    do {
+                                                        NewConnectionActivity nc = new NewConnectionActivity();
+                                                        Bundle bndlanimation = ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                                                        Intent intent = new Intent(getContext(), nc.getClass());
+                                                        getContext().startActivity(intent, bndlanimation);
+                                                    }
+                                                        while (mainActivity.mBluetoothAdapter.isEnabled());
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                break;
+                                            case "NEGATIVE":
+                                                break;
+                                        }
+                                    }
+                                })
+                                .show();
+                    }
+                }
+                break;
         }
     }
 

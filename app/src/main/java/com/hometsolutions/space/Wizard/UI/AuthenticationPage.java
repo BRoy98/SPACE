@@ -18,35 +18,44 @@
  *
  ****************************************************************************************/
 
-package com.hometsolutions.space.Fragments;
+package com.hometsolutions.space.Wizard.UI;
 
-
-import android.os.Bundle;
-//import android.app.Fragment;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.text.TextUtils;
 
-import com.hometsolutions.space.R;
+import com.tech.freak.wizardpager.model.ModelCallbacks;
+import com.tech.freak.wizardpager.model.Page;
+import com.tech.freak.wizardpager.model.ReviewItem;
 
+import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Bishwajyoti Roy on 11/22/2016.
  */
-public class DashBoaedFragment extends Fragment {
 
+public class AuthenticationPage extends Page {
 
-    public DashBoaedFragment() {
-        // Required empty public constructor
+    boolean isAuthenticated = false;
+    AuthenticationFragment authenticationFragment;
+    public static final String CONNECT_DATA_KEY = "connect_state";
+
+    public AuthenticationPage(ModelCallbacks callbacks, String title) {
+        super(callbacks, title);
+        authenticationFragment = new AuthenticationFragment();
     }
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dash_boaed, container, false);
+    public Fragment createFragment() {
+        return authenticationFragment.create(getKey());
     }
 
+    @Override
+    public void getReviewItems(ArrayList<ReviewItem> arrayList) {
+
+    }
+
+    @Override
+    public boolean isCompleted() {
+        return isAuthenticated;
+    }
 }

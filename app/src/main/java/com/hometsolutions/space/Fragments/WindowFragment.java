@@ -21,17 +21,31 @@
 package com.hometsolutions.space.Fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
+import android.text.style.UnderlineSpan;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hometsolutions.space.Adapters.mRoomAdapterWindowC;
 import com.hometsolutions.space.Activitys.MainActivity;
 import com.hometsolutions.space.Utils.DatabaseHelper;
+import com.dd.CircularProgressButton;
 import com.hometsolutions.space.R;
 
 
@@ -45,41 +59,62 @@ public class WindowFragment extends Fragment {
     private MainActivity mainActivity;
     private DatabaseHelper databaseHelper;
 
-    public WindowFragment() {
+    public WindowFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         //this.databaseHelper = new DatabaseHelper(mainActivity.getApplicationContext());
-    }
-
-    public static WindowFragment newInstance(@LayoutRes int layoutResId) {
-        Bundle args = new Bundle();
-        //args.putInt(LAYOUT_RESOURCE_ID_ARG_KEY, layoutResId);
-        WindowFragment fragment = new WindowFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View layout = inflater.inflate(R.layout.fragment_under_development, container, false);
-        /*final View layout = inflater.inflate(R.layout.fragment_window, container, false);
-        recyclerView = (RecyclerView) layout.findViewById(R.id.recycler_view_window);
-        adapter = new mRoomAdapterWindowC(getContext(), databaseHelper.getRoomsArray());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnItemTouchListener(new RecyclerItemTouchListener(getActivity(), new
-                DefaultItemClickListener() {
-                    @Override
-                    public boolean onItemClick(final View view, final int position) {
-                        Log.i("WindowF","Click: " + position);
-                        return false;
-                    }
+        final View layout = inflater.inflate(R.layout.wizard_fragment_authentication, container, false);
+        final CircularProgressButton circularButton1 = (CircularProgressButton) layout.findViewById(R.id.btn_authenticate);
+        circularButton1.setIndeterminateProgressMode(true);
+        circularButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (circularButton1.getProgress() == 0) {
+                    circularButton1.setProgress(50);
+                } else if (circularButton1.getProgress() == 100) {
+                    circularButton1.setProgress(0);
+                } else {
+                    circularButton1.setProgress(100);
+                }
+            }
+        });
 
-                    @Override
-                    public void onItemLongPress(View view, int position) {
-                        Log.i("WindowF","LongClick: " + position);
-                    }
-                }));*/
+        /*sucBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lb.loadingSuccessful();
+                Log.i("SPACE - LB ST", String.valueOf(lb.getCurrentState()));
+            }
+        });
+
+        failedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lb.loadingFailed();
+                Log.i("SPACE - LB ST", String.valueOf(lb.getCurrentState()));
+            }
+        });
+
+        resetBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                lb.reset();
+                Log.i("SPACE - LB ST", String.valueOf(lb.getCurrentState()));
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lb.cancelLoading();
+                Log.i("SPACE - LB ST", String.valueOf(lb.getCurrentState()));
+            }
+        });*/
+
         return layout;
     }
 

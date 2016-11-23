@@ -1,21 +1,18 @@
 /*****************************************************************************************
- *
- *                       Copyright (C) 2016 Bishwajyoti Roy
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- *
+ * Copyright (C) 2016 Bishwajyoti Roy
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************************/
 
 package com.hometsolutions.space.Activitys;
@@ -36,7 +33,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +41,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.hometsolutions.space.BuildConfig;
 import com.hometsolutions.space.Fragments.*;
 import com.hometsolutions.space.R;
@@ -72,6 +67,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
@@ -80,7 +76,6 @@ public class MainActivity extends AppCompatActivity
     private Drawer drawer;
     private int drawerSelected;
     private boolean doubleBackToExitPressedOnce = false;
-    private boolean BLUTOOTH_SETUP = false;
     private boolean fragmentHome = false;
     private boolean fragmentDashboard = false;
     private boolean fragmentFan = false;
@@ -92,8 +87,7 @@ public class MainActivity extends AppCompatActivity
     private boolean fragmentSettings = false;
     private boolean fragmentTrouble = false;
     private boolean fragmentLicences = false;
-    private boolean fragmentConnectionWizerd = false;
-    private boolean firstEnebleBTSnackBar = false;
+    private boolean firstEnableBTSnackBar = false;
     private boolean menuCreated = false;
     public boolean fragmentLightNextON = false;
 
@@ -101,6 +95,7 @@ public class MainActivity extends AppCompatActivity
     public Menu menu;
 
     public String deviceID;
+    public boolean bluetoothSetup = false;
     public boolean connectedBeforeMinimize = false;
     public boolean connected = false;
     public FrameLayout cLayout;
@@ -111,7 +106,7 @@ public class MainActivity extends AppCompatActivity
     EditComponentsActivity EditComponentsActivity;
 
     final ConnectionFragment hf = new ConnectionFragment();
-    final DashBoaedFragment df = new DashBoaedFragment();
+    final DashBoardFragment df = new DashBoardFragment();
     private LightControlFragment lc = null;//new LightControlFragment();
     private LightControlNextFragment lnc = null;//new LightControlNextFragment();
     private FanControlFragment fc = null;//new FanControlFragment(MainActivity.this);
@@ -127,7 +122,8 @@ public class MainActivity extends AppCompatActivity
             //.withAutoDetect(false)
             .supportFragment();
     TextView toastText;
-
+    String profileName;
+    String profileEmail;
 
     public void showDeviceListDialog(boolean a) {
         BluetoothDeviceListDialog dialog = new BluetoothDeviceListDialog(this);
@@ -488,9 +484,10 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
-
         context = getApplicationContext();
 
+        profileName = (BuildConfig.DEBUG ? "SPACE Beta" : "SPACE");
+        profileEmail = (BuildConfig.DEBUG ? "Version: PRE-RELEASE" + " • Build: " + BuildConfig.VERSION_CODE : "Version: " + BuildConfig.VERSION_NAME);
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withProfileImagesVisible(false)
@@ -498,8 +495,8 @@ public class MainActivity extends AppCompatActivity
                 .withSelectionListEnabledForSingleProfile(false)
                 .addProfiles(
                         new ProfileDrawerItem()
-                                .withName("SPACE Beta")
-                                .withEmail("Version: " + "PRE-RELEASE"/*BuildConfig.VERSION_NAME*/ + " • Build: " + BuildConfig.VERSION_CODE))
+                                .withName(profileName)
+                                .withEmail(profileEmail))
                 .withCurrentProfileHiddenInList(true)
                 .build();
 
@@ -518,10 +515,10 @@ public class MainActivity extends AppCompatActivity
                                 new SecondaryDrawerItem().withName(R.string.nav_fanC).withIdentifier(202).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_toys))
                                         .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_toys).colorRes(R.color.colorAccent)),
                                 new SecondaryDrawerItem().withName(R.string.nav_plugC).withIdentifier(203).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_power))
-                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_power).colorRes(R.color.colorAccent))
-                                /*new SecondaryDrawerItem().withName(R.string.nav_windowC).withIdentifier(204).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture))
-                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture).colorRes(R.color.colorAccent)),
-                                new SecondaryDrawerItem().withName(R.string.nav_door_lockC).withIdentifier(205).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_vpn_key))
+                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_power).colorRes(R.color.colorAccent)),
+                                new SecondaryDrawerItem().withName(R.string.nav_windowC).withIdentifier(204).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture))
+                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture).colorRes(R.color.colorAccent))
+                                /*new SecondaryDrawerItem().withName(R.string.nav_door_lockC).withIdentifier(205).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_vpn_key))
                                         .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_vpn_key).colorRes(R.color.colorAccent))*/
                         ),
                         new PrimaryDrawerItem().withName(R.string.nav_device_setup).withIdentifier(3).withIcon(new IconDrawable(this, MaterialIcons.md_edit))
@@ -531,7 +528,7 @@ public class MainActivity extends AppCompatActivity
                         new PrimaryDrawerItem().withName(R.string.nav_settings).withIdentifier(4).withIcon(new IconDrawable(this, MaterialIcons.md_settings))
                                 .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_settings).colorRes(R.color.colorAccent)),
                         new PrimaryDrawerItem().withName(R.string.nav_trouble).withIdentifier(5).withIcon(new IconDrawable(this, MaterialIcons.md_help_outline))
-                                .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_help_outline).colorRes(R.color.colorAccent)).withEnabled(false),
+                                .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_help_outline).colorRes(R.color.colorAccent)),
                         new PrimaryDrawerItem().withName(R.string.nav_licence).withIdentifier(6).withIcon(new IconDrawable(this, TypiconsIcons.typcn_social_github_circular))
                                 .withSelectedIcon(new IconDrawable(this, TypiconsIcons.typcn_social_github_circular).colorRes(R.color.colorAccent))
                 )
@@ -602,8 +599,7 @@ public class MainActivity extends AppCompatActivity
         lc = new LightControlFragment(MainActivity.this);
         lnc = new LightControlNextFragment(MainActivity.this);
         fc = new FanControlFragment(MainActivity.this);
-        wf = new WindowFragment();
-        connectionFragment(true);
+        wf = new WindowFragment(MainActivity.this);
         hideAllFragment();
         dashboardFragment(true);
         drawerSelected = 1;
@@ -621,9 +617,9 @@ public class MainActivity extends AppCompatActivity
         if (mBluetoothAdapter != null) {
             if (mBluetoothAdapter.isEnabled()) {
                 bluetoothSerial.setup();
-                BLUTOOTH_SETUP = true;
+                bluetoothSetup = true;
             } else {
-                if(!firstEnebleBTSnackBar) {
+                if (!firstEnableBTSnackBar) {
                     btSnackbar = Snackbar.make(cLayout, "Bluetooth is disabled", Snackbar.LENGTH_INDEFINITE)
                             .setAction("ENABLE", new View.OnClickListener() {
                                 @Override
@@ -634,7 +630,7 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
                     btSnackbar.show();
-                    firstEnebleBTSnackBar = true;
+                    firstEnableBTSnackBar = true;
                 }
             }
         } else {
@@ -655,7 +651,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(menuCreated){
+        if (menuCreated) {
             if (mBluetoothAdapter != null) {
                 if (mBluetoothAdapter.isEnabled()) {
                     menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_enebled));
@@ -709,7 +705,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             drawer.setSelection(1);
             drawerSelected = 1;
-            if(drawer.isDrawerOpen()) {
+            if (drawer.isDrawerOpen()) {
                 drawer.closeDrawer();
             }
         }
@@ -789,9 +785,9 @@ public class MainActivity extends AppCompatActivity
                         ConnectionFragment.btPairState.setEnabled(true);
                         ConnectionFragment.connect.setEnabled(true);
                         ConnectionFragment.disconnect.setEnabled(true);
-                        if (!BLUTOOTH_SETUP) {
+                        if (!bluetoothSetup) {
                             bluetoothSerial.setup();
-                            BLUTOOTH_SETUP = true;
+                            bluetoothSetup = true;
                         }
                         if (btSnackbar != null) {
                             if (btSnackbar.isShown())
@@ -829,7 +825,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBluetoothDeviceDisconnected() {
-        menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_enebled));
+        if (menu != null) {
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_enebled));
+        }
         updatePairButton();
         updateBluetoothState();
         connected = false;
@@ -842,13 +840,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBluetoothDeviceConnected(String name, String address) {
-        Log.i("BT_ON_CONNECT","1");
         if (!connectedBeforeMinimize) {
-            Log.i("BT_ON_CONNECT","2");
             connectedBeforeMinimize = true;
-            Log.i("BT_ON_CONNECT","3");
             deviceID = bluetoothSerial.getConnectedDeviceAddress();
-            Log.i("BT_ON_CONNECT","4");
         }
         menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_bluetooth_connected));
         updatePairButton();

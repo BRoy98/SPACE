@@ -53,12 +53,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="tab_new_conn_type">Connection type</string>
-    <string name="tab_new_pair">Pair</string>
-    <string name="tab_new_connect">Connect and Authenticate</string>
-    <string name="tab_new_dp_name">Display names</string>
-    <string name="tab_new_setup">Port Setup</string>
     <string name="tab_next">Next</string>
     <string name="tab_prev">Previous</string>
-    <string name="tab_finish">Submit order</string>
+    <string name="tab_finish">Finish</string>
+    <string name="tab_new_conn_type">Connection type</string>
+    <string name="tab_new_pair">Pair and Connect</string>
+    <string name="tab_new_auth">Authenticate</string>
+    <string name="tab_new_dp_name">Display names</string>
+    <string name="tab_new_setup">Port Setup</string>
+    <string name="tab_pair_text_1">In order to connect to the device you need to pair with the device via bluetooth in the settings.\nIf you have
+        already paired you can skip this step. \n\nVisit support.hometsolutions.com for more info.</string>
 </resources>
