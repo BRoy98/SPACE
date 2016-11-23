@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 public class AuthenticationPage extends Page {
 
-    boolean isAuthenticated = false;
+    public boolean isAuthenticated = false;
     AuthenticationFragment authenticationFragment;
     public static final String CONNECT_DATA_KEY = "connect_state";
 

@@ -48,7 +48,7 @@ public class PairDevicePage extends Page {
 
     @Override
     public void getReviewItems(ArrayList<ReviewItem> arrayList) {
-        arrayList.add(new ReviewItem("Pairing", "Successful", getKey(), -1));
+        //arrayList.add(new ReviewItem("Pairing", "Successful", getKey(), -1));
     }
 
     @Override

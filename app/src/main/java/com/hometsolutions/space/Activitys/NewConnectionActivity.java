@@ -38,21 +38,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.app.Application;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.hometsolutions.space.Adapters.mDevicesAdapter;
 import com.hometsolutions.space.R;
+import com.hometsolutions.space.Utils.MyLifecycleHandler;
+import com.hometsolutions.space.Utils.RecyclerItemClickListener;
 import com.hometsolutions.space.Wizard.Model.ConnectionWizardModel;
 import com.hometsolutions.space.Wizard.UI.AuthenticationFragment;
 import com.hometsolutions.space.Wizard.UI.PairDeviceFragment;
-import com.macroyau.blue2serial.BluetoothDeviceListDialog;
-import com.macroyau.blue2serial.BluetoothSerial;
-import com.macroyau.blue2serial.BluetoothSerialListener;
 import com.tech.freak.wizardpager.model.AbstractWizardModel;
 import com.tech.freak.wizardpager.model.ModelCallbacks;
 import com.tech.freak.wizardpager.model.Page;
@@ -60,19 +62,26 @@ import com.tech.freak.wizardpager.ui.PageFragmentCallbacks;
 import com.tech.freak.wizardpager.ui.ReviewFragment;
 import com.tech.freak.wizardpager.ui.StepPagerStrip;
 import com.rey.material.widget.Button;
+import io.palaima.smoothbluetooth.SmoothBluetooth;
+import io.palaima.smoothbluetooth.Device;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewConnectionActivity extends AppCompatActivity implements
-        PageFragmentCallbacks, ReviewFragment.Callbacks, ModelCallbacks, BluetoothSerialListener,
-        BluetoothDeviceListDialog.OnDeviceSelectedListener, View.OnClickListener, ViewPager.OnPageChangeListener,
+        PageFragmentCallbacks, ReviewFragment.Callbacks, ModelCallbacks,
+        View.OnClickListener, ViewPager.OnPageChangeListener,
         StepPagerStrip.OnPageSelectedListener{
 
 
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
-
+    private String subtitle;
     private boolean mEditingAfterReview;
+    private boolean paused;
+
+    public String deviceID_NEW = null;
+    public int devicePort_NEW = 0;
 
     private AbstractWizardModel mWizardModel;
     private boolean mConsumePageSelectedEvent;
@@ -84,59 +93,18 @@ public class NewConnectionActivity extends AppCompatActivity implements
     private StepPagerStrip mStepPagerStrip;
 
     public boolean connected = false;
-    private boolean BLUTOOTH_SETUP = false;
-    public BluetoothSerial bluetoothSerial;
+
+    public SmoothBluetooth mSmoothBluetooth;
     public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private MaterialDialog.Builder builder;
-    MaterialDialog btOffDialog;
+    private MaterialDialog.Builder builderbtOFF, builderDevices;
+    private List<Integer> mBuffer = new ArrayList<>();
+    private List<String> mResponseBuffer = new ArrayList<>();
+    MaterialDialog btOffDialog, devicesDialog;
     public CountDownTimer connectionDownTimer;
     long time = 10 * 1000;
     long interval = 1 * 1000;
 
     public NewConnectionActivity() {
-    }
-
-    public void showDeviceListDialog(boolean a) {
-        BluetoothDeviceListDialog dialog = new BluetoothDeviceListDialog(this);
-        dialog.setOnDeviceSelectedListener(this);
-        dialog.setTitle("Paired Devices");
-        dialog.setDevices(bluetoothSerial.getPairedDevices());
-        if (a)
-            dialog.showAddress(true);
-        else
-            dialog.showAddress(false);
-        dialog.show();
-        //startActivityForResult(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS), 0);
-    }
-
-    private void updateBluetoothState() {
-        final int state;
-        if (bluetoothSerial != null)
-            state = bluetoothSerial.getState();
-        else
-            state = BluetoothSerial.STATE_DISCONNECTED;
-
-        String subtitle;
-        switch (state) {
-            case BluetoothSerial.STATE_CONNECTING:
-                subtitle = getString(R.string.status_connecting);
-                break;
-            case BluetoothSerial.STATE_CONNECTED:
-                subtitle = getString(R.string.status_connected, bluetoothSerial.getConnectedDeviceName());
-                if (PairDeviceFragment.connect_text != null)
-                    PairDeviceFragment.updateConnectState(true);
-                break;
-            case BluetoothSerial.STATE_DISCONNECTED:
-                subtitle = getString(R.string.status_disconnected);
-                if (PairDeviceFragment.connect_text != null)
-                    PairDeviceFragment.updateConnectState(false);
-                break;
-            default:
-                subtitle = getString(R.string.status_disconnected);
-                break;
-        }
-        if (PairDeviceFragment.connect_text != null)
-            PairDeviceFragment.connect_text.setText(subtitle);
     }
 
     private void updateBottomBar() {
@@ -190,8 +158,11 @@ public class NewConnectionActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Connection Wizard");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        /*Application app = new Application();
+        app.registerActivityLifecycleCallbacks(new MyLifecycleHandler());*/
 
-        bluetoothSerial = new BluetoothSerial(this, this);
+        mSmoothBluetooth = new SmoothBluetooth(this);
+        mSmoothBluetooth.setListener(mListener);
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
 
@@ -217,7 +188,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
         updateBottomBar();
 
         //region bluetoothOffDialog
-        builder = new MaterialDialog.Builder(NewConnectionActivity.this)
+        builderbtOFF = new MaterialDialog.Builder(NewConnectionActivity.this)
                 .title("Enable Bluetooth")
                 .content("Bluetooth is turned off. In order to continue the wizard you need to " +
                         "enable bluetooth. Do you want to enable bluetooth now?")
@@ -238,45 +209,26 @@ public class NewConnectionActivity extends AppCompatActivity implements
                     }
                 })
                 .cancelable(false);
-        btOffDialog = builder.build();
+        btOffDialog = builderbtOFF.build();
         //endregion
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (mBluetoothAdapter != null) {
-            if (mBluetoothAdapter.isEnabled()) {
-                bluetoothSerial.setup();
-                BLUTOOTH_SETUP = true;
-            }
-
-        } else {
-            new AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setMessage(R.string.no_bluetooth)
-                    .setPositiveButton(R.string.action_quit, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setCancelable(false)
-                    .show();
-        }
+    protected void onPause() {
+        super.onPause();
+        paused = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateBluetoothState();
+        paused = false;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        bluetoothSerial.stop();
-        connected = false;
+        mSmoothBluetooth.stop();
     }
 
     @Override
@@ -299,7 +251,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
                     1. Fixed license files
                     2. Get 'Display Dame' data at the end of the wizard (found how to get data at the end of the wizard)*/
 
-                    String dpName = mWizardModel.findByKey("Six ports:Display Name").getData().getString("dp_name");
+                    //String dpName = mWizardModel.findByKey("Six ports:Display Name").getData().getString("dp_name");
 
                 } else {
                     if (mEditingAfterReview) {
@@ -354,7 +306,8 @@ public class NewConnectionActivity extends AppCompatActivity implements
     public void onPageDataChanged(Page page) {
         if (page.isRequired()) {
             if (recalculateCutOffPage()) {
-                mPagerAdapter.notifyDataSetChanged();
+                if(mPagerAdapter != null)
+                    mPagerAdapter.notifyDataSetChanged();
                 updateBottomBar();
             }
         }
@@ -491,6 +444,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
     }
 
     public class MyCountDownTimer extends CountDownTimer {
+
         public MyCountDownTimer(long startTime, long interval) {
             super(startTime, interval);
         }
@@ -507,56 +461,130 @@ public class NewConnectionActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onBluetoothDeviceSelected(BluetoothDevice device) {
-        bluetoothSerial.connect(device);
-    }
+    private SmoothBluetooth.Listener mListener = new SmoothBluetooth.Listener() {
 
-    @Override
-    public void onBluetoothNotSupported() {
+        @Override
+        public void onBluetoothNotSupported() {
 
-    }
+        }
 
-    @Override
-    public void onBluetoothDisabled() {
+        @Override
+        public void onBluetoothNotEnabled() {
 
-    }
+        }
 
-    @Override
-    public void onBluetoothDeviceDisconnected() {
-        updateBluetoothState();
-        connected = false;
-    }
+        @Override
+        public void onConnecting(Device device) {
+            subtitle = getString(R.string.status_connecting);
+            if (PairDeviceFragment.connect_text != null)
+                PairDeviceFragment.connect_text.setText(subtitle);
+        }
 
-    @Override
-    public void onConnectingBluetoothDevice() {
-        updateBluetoothState();
-    }
+        @Override
+        public void onConnected(Device device) {
+            subtitle = getString(R.string.status_connected, device.getName());
+            if (PairDeviceFragment.connect_text != null)
+                PairDeviceFragment.updateConnectState(true);
+            if (PairDeviceFragment.connect_text != null)
+                PairDeviceFragment.connect_text.setText(subtitle);
+        }
 
-    @Override
-    public void onBluetoothDeviceConnected(String name, String address) {
-        updateBluetoothState();
-        connected = true;
-    }
-
-    @Override
-    public void onBluetoothSerialRead(String message) {
-        int i = 0;
-        String auth = message;
-        Log.i("SPACE - MESSAGE", auth);
-        String[] values = new String[10];
-        //Log.i("SPACE - SPLIT", String.valueOf(values.length));
-        if(auth.startsWith("_")) {
-            for (String data: auth.split("__")) {
-                values[i] = data;
-                Log.i("SPACE - SPLIT", data);
-                i++;
+        @Override
+        public void onDisconnected() {
+            if(!paused) {
+                subtitle = getString(R.string.status_disconnected);
+                if (PairDeviceFragment.connect_text != null)
+                    PairDeviceFragment.updateConnectState(false);
+                if (PairDeviceFragment.connect_text != null)
+                    PairDeviceFragment.connect_text.setText(subtitle);
             }
         }
-    }
 
-    @Override
-    public void onBluetoothSerialWrite(String message) {
+        @Override
+        public void onConnectionFailed(Device device) {
+            subtitle = getString(R.string.status_disconnected);
+            if (PairDeviceFragment.connect_text != null)
+                PairDeviceFragment.updateConnectState(false);
+            if (PairDeviceFragment.connect_text != null)
+                PairDeviceFragment.connect_text.setText(subtitle);
+        }
 
-    }
+        @Override
+        public void onDiscoveryStarted() {
+
+        }
+
+        @Override
+        public void onDiscoveryFinished() {
+
+        }
+
+        @Override
+        public void onNoDevicesFound() {
+
+        }
+
+        @Override
+        public void onDevicesFound(final List<Device> deviceList,
+                                   final SmoothBluetooth.ConnectionCallback connectionCallback) {
+
+            final MaterialDialog dialog = new MaterialDialog.Builder(NewConnectionActivity.this)
+                    .title("Paired Devices")
+                    .adapter(new mDevicesAdapter(NewConnectionActivity.this, deviceList), null)
+                    .build();
+
+            RecyclerView listView = dialog.getRecyclerView();
+            if (listView != null) {
+                listView.addOnItemTouchListener(new RecyclerItemClickListener(NewConnectionActivity.this, listView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        connectionCallback.connectTo(deviceList.get(position));
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        // ...
+                    }
+                }));
+            }
+
+            dialog.show();
+        }
+
+        @Override
+        public void onDataReceived(int data) {
+            mBuffer.add(data);
+            if (data == 64 && !mBuffer.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (int integer : mBuffer) {
+                    sb.append( Character.toString ((char) integer));
+                }
+                mBuffer.clear();
+                Log.i("SMOOTH - DATA_R", sb.toString());
+                int i = 0;
+                String[] values = new String[10];
+                for (String value: sb.toString().split("__")) {
+                    values[i] = value;
+                    Log.i("SPACE - SPLIT", value +" - " + values[i] + String.valueOf(i));
+                    i++;
+                }
+                if(values[1] != null) {
+                    /*
+                    * ARDUINO SENDING DATA:
+                    *
+                    * mySerial.println("__CHK-AUT__" + DEVICE_ID + "__8__" + FIRST_SETUP + "__@");
+                    */
+                    if(values[1].contains("CHK-AUT")) {
+                        if(AuthenticationFragment.circularButton != null) {
+                            AuthenticationFragment.mPage.isAuthenticated = true;
+                            AuthenticationFragment.mPage.notifyDataChanged();
+                            timerStop();
+                            AuthenticationFragment.circularButton.setProgress(100);
+                        }
+                    }
+                }
+            }
+        }
+    };
 }

@@ -44,7 +44,7 @@ public class AuthenticationFragment extends Fragment {
     private static final String ARG_KEY = "key2";
     private PageFragmentCallbacks mCallbacks;
     private String mKey;
-    private static AuthenticationPage mPage;
+    public static AuthenticationPage mPage;
     public static CircularProgressButton circularButton;
     TextView title;
 
@@ -81,7 +81,7 @@ public class AuthenticationFragment extends Fragment {
             public void onClick(View v) {
                 if (circularButton.getProgress() == 0) {
                     circularButton.setProgress(50);
-                    ((NewConnectionActivity) getActivity ()).bluetoothSerial.write("CHK-AUT");
+                    ((NewConnectionActivity) getActivity ()).mSmoothBluetooth.send("CHK-AUT", false);//bluetoothSerial.write("CHK-AUT");
                     ((NewConnectionActivity) getActivity ()).timerStart();
                 } else if (circularButton.getProgress() == -1) {
                     circularButton.setProgress(0);

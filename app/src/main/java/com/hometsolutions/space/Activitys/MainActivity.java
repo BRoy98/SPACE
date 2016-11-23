@@ -54,6 +54,7 @@ import com.joanzapata.iconify.fonts.TypiconsModule;
 import com.macroyau.blue2serial.BluetoothDeviceListDialog;
 import com.macroyau.blue2serial.BluetoothSerial;
 import com.macroyau.blue2serial.BluetoothSerialListener;
+import com.macroyau.blue2serial.BluetoothSerialRawListener;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.aboutlibraries.ui.LibsSupportFragment;
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
@@ -71,7 +72,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
-        implements BluetoothSerialListener, BluetoothDeviceListDialog.OnDeviceSelectedListener {
+        implements BluetoothSerialRawListener, BluetoothDeviceListDialog.OnDeviceSelectedListener {
 
     private Drawer drawer;
     private int drawerSelected;
@@ -874,4 +875,13 @@ public class MainActivity extends AppCompatActivity
         bluetoothSerial.connect(device);
     }
 
+    @Override
+    public void onBluetoothSerialReadRaw(byte[] bytes) {
+
+    }
+
+    @Override
+    public void onBluetoothSerialWriteRaw(byte[] bytes) {
+
+    }
 }

@@ -129,11 +129,11 @@ public class PairDeviceFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.btn_wizard_connect:
                 if(mPage.isConnected) {
-                    ((NewConnectionActivity) getActivity ()).bluetoothSerial.stop();
+                    ((NewConnectionActivity) getActivity ()).mSmoothBluetooth.disconnect();
                     updateConnectState(false);
                 }
                 else if(!mPage.isConnected)
-                    ((NewConnectionActivity) getActivity ()).showDeviceListDialog(true);
+                    ((NewConnectionActivity) getActivity ()).mSmoothBluetooth.tryConnection();
                 break;
             default:
                 break;
