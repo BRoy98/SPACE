@@ -21,10 +21,8 @@
 package com.hometsolutions.space.Activitys;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -35,7 +33,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -44,13 +41,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.Application;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.hometsolutions.space.Adapters.mDevicesAdapter;
+import com.hometsolutions.space.Adapters.mBT_DevicesListsAdapter;
 import com.hometsolutions.space.R;
-import com.hometsolutions.space.Utils.MyLifecycleHandler;
 import com.hometsolutions.space.Utils.RecyclerItemClickListener;
 import com.hometsolutions.space.Wizard.Model.ConnectionWizardModel;
 import com.hometsolutions.space.Wizard.UI.AuthenticationFragment;
@@ -80,8 +75,9 @@ public class NewConnectionActivity extends AppCompatActivity implements
     private boolean mEditingAfterReview;
     private boolean paused;
 
-    public String deviceID_NEW = null;
-    public int devicePort_NEW = 0;
+    public String deviceID_NEW;
+    public int devicePort_NEW;
+    public boolean deviceFirstSetupCheck_NEW;
 
     private AbstractWizardModel mWizardModel;
     private boolean mConsumePageSelectedEvent;
@@ -89,20 +85,18 @@ public class NewConnectionActivity extends AppCompatActivity implements
     private Button mNextButton;
     private Button mPrevButton;
 
+
+
     private List<Page> mCurrentPageSequence;
     private StepPagerStrip mStepPagerStrip;
 
-    public boolean connected = false;
-
     public SmoothBluetooth mSmoothBluetooth;
     public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private MaterialDialog.Builder builderbtOFF, builderDevices;
     private List<Integer> mBuffer = new ArrayList<>();
-    private List<String> mResponseBuffer = new ArrayList<>();
-    MaterialDialog btOffDialog, devicesDialog;
+    MaterialDialog btOffDialog;
     public CountDownTimer connectionDownTimer;
     long time = 10 * 1000;
-    long interval = 1 * 1000;
+    long interval = 1000;
 
     public NewConnectionActivity() {
     }
@@ -139,7 +133,6 @@ public class NewConnectionActivity extends AppCompatActivity implements
     }
 
     public void timerStop() {
-        AuthenticationFragment.circularButton.setProgress(-1);
         if(connectionDownTimer != null)
             connectionDownTimer.cancel();
 
@@ -158,8 +151,6 @@ public class NewConnectionActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Connection Wizard");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        /*Application app = new Application();
-        app.registerActivityLifecycleCallbacks(new MyLifecycleHandler());*/
 
         mSmoothBluetooth = new SmoothBluetooth(this);
         mSmoothBluetooth.setListener(mListener);
@@ -188,7 +179,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
         updateBottomBar();
 
         //region bluetoothOffDialog
-        builderbtOFF = new MaterialDialog.Builder(NewConnectionActivity.this)
+        MaterialDialog.Builder builderBTOFF = new MaterialDialog.Builder(NewConnectionActivity.this)
                 .title("Enable Bluetooth")
                 .content("Bluetooth is turned off. In order to continue the wizard you need to " +
                         "enable bluetooth. Do you want to enable bluetooth now?")
@@ -197,10 +188,20 @@ public class NewConnectionActivity extends AppCompatActivity implements
                 .onAny(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Log.i("Press", which.toString());
                         switch (which.toString()) {
                             case "POSITIVE":
-
+                                if (mBluetoothAdapter != null) {
+                                    Log.i("mBluetoothAdapter", "!null");
+                                    mBluetoothAdapter.enable();
+                                }
+                                if (PairDeviceFragment.connect_text != null) {
+                                    mStepPagerStrip.setCurrentPage(2);
+                                    PairDeviceFragment.updateConnectState(false);
+                                }
+                                if (PairDeviceFragment.connect_text != null) {
+                                    mStepPagerStrip.setCurrentPage(2);
+                                    PairDeviceFragment.updateConnectState(false);
+                                }
                                 break;
                             case "NEGATIVE":
                                 closeActivity();
@@ -209,7 +210,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
                     }
                 })
                 .cancelable(false);
-        btOffDialog = builderbtOFF.build();
+        btOffDialog = builderBTOFF.build();
         //endregion
     }
 
@@ -246,13 +247,6 @@ public class NewConnectionActivity extends AppCompatActivity implements
             case R.id.next_button:
                 if (mPager.getCurrentItem() == mCurrentPageSequence.size()) {
 
-                    //On finish
-/*
-                    1. Fixed license files
-                    2. Get 'Display Dame' data at the end of the wizard (found how to get data at the end of the wizard)*/
-
-                    //String dpName = mWizardModel.findByKey("Six ports:Display Name").getData().getString("dp_name");
-
                 } else {
                     if (mEditingAfterReview) {
                         mPager.setCurrentItem(mPagerAdapter.getCount() - 1);
@@ -278,7 +272,6 @@ public class NewConnectionActivity extends AppCompatActivity implements
     @Override
     public void onPageSelected(int position) {
         mStepPagerStrip.setCurrentPage(position);
-
         if (mConsumePageSelectedEvent) {
             mConsumePageSelectedEvent = false;
             return;
@@ -452,11 +445,13 @@ public class NewConnectionActivity extends AppCompatActivity implements
         @Override
         public void onFinish() {
             Log.i("SPACE - TIMER", "Time's up!");
-            AuthenticationFragment.circularButton.setProgress(-1);
+            //if(timerTick > 9)
+                AuthenticationFragment.circularButton.setProgress(-1);
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
+            //timerTick++;
             Log.i("SPACE - TIMER", "" + millisUntilFinished / 1000);
         }
     }
@@ -530,7 +525,7 @@ public class NewConnectionActivity extends AppCompatActivity implements
 
             final MaterialDialog dialog = new MaterialDialog.Builder(NewConnectionActivity.this)
                     .title("Paired Devices")
-                    .adapter(new mDevicesAdapter(NewConnectionActivity.this, deviceList), null)
+                    .adapter(new mBT_DevicesListsAdapter(NewConnectionActivity.this, deviceList), null)
                     .build();
 
             RecyclerView listView = dialog.getRecyclerView();
@@ -561,26 +556,31 @@ public class NewConnectionActivity extends AppCompatActivity implements
                     sb.append( Character.toString ((char) integer));
                 }
                 mBuffer.clear();
-                Log.i("SMOOTH - DATA_R", sb.toString());
+                //Log.i("SMOOTH - DATA_R", sb.toString());
                 int i = 0;
                 String[] values = new String[10];
                 for (String value: sb.toString().split("__")) {
                     values[i] = value;
-                    Log.i("SPACE - SPLIT", value +" - " + values[i] + String.valueOf(i));
+                    Log.i("SPACE - SPLIT", String.valueOf(i) +" : " + values[i]);
                     i++;
                 }
                 if(values[1] != null) {
                     /*
                     * ARDUINO SENDING DATA:
-                    *
                     * mySerial.println("__CHK-AUT__" + DEVICE_ID + "__8__" + FIRST_SETUP + "__@");
                     */
-                    if(values[1].contains("CHK-AUT")) {
+                    if(values[1].contains("CHK-AUT") && values[2] != null && values[3] != null && values[4] != null ) {
+                            deviceID_NEW = values[2];
+                            devicePort_NEW = Integer.parseInt(values[3]);
+                            if(values[4].contains("FALSE"))
+                                deviceFirstSetupCheck_NEW = false;
+                            else if(values[4].contains("TRUE"))
+                                deviceFirstSetupCheck_NEW = true;
+                            timerStop();
+                            AuthenticationFragment.circularButton.setProgress(100);
                         if(AuthenticationFragment.circularButton != null) {
                             AuthenticationFragment.mPage.isAuthenticated = true;
                             AuthenticationFragment.mPage.notifyDataChanged();
-                            timerStop();
-                            AuthenticationFragment.circularButton.setProgress(100);
                         }
                     }
                 }

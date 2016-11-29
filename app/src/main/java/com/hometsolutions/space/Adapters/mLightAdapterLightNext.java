@@ -58,7 +58,7 @@ public class mLightAdapterLightNext extends RecyclerView.Adapter<mLightAdapterLi
 
     @Override
     public mViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = inflator.inflate(R.layout.recycler_layout_light_control, parent, false);
+        View layout = inflator.inflate(R.layout.recycler_layout_light_dim_control, parent, false);
         return new mViewHolder(layout);
     }
 
@@ -82,36 +82,10 @@ public class mLightAdapterLightNext extends RecyclerView.Adapter<mLightAdapterLi
         mViewHolder(View itemView) {
             super(itemView);
 
-            /*
-            * ------------------------------------------------
-            * FORMAT: **DEVICE TYPE**DEVICE ID**DEVICE STATE**
-            * ------------------------------------------------
-            * --------------        ----------------
-            * DEVICE TYPES:         DEVICE STATES:
-            * --------------        ----------------
-            * Light     : LL        For lights:
-            * Fan       : FF        0 = OFF
-            * Plug      : PL        1 = Brightness 1
-            * Window    : WW        2 = Brightness 2
-            * Door Lock : DL        3 = Brightness 3
-            * --------------        4 = Brightness 4
-            *                       5 = Brightness 5
-            *
-            *                       For fans:
-            *                       0 = OFF
-            *                       1 = Speed 1
-            *                       2 = Speed 2
-            *                       3 = Speed 3
-            *                       4 = Speed 4
-            *                       5 = Speed 5
-            *                       ----------------
-            * ------------------------------------------------
-            */
-
             lightName = (TextView) itemView.findViewById(R.id.Recycler_text_light_name);
             card = (CardView) itemView.findViewById(R.id.Recycler_card_light_Control);
-            discreteSlider = (DiscreteSlider) itemView.findViewById(R.id.Recycler_slider_light_discreteSlider);
-            lightState = (TextView) itemView.findViewById(R.id.Recycler_text_lightState);
+            //discreteSlider = (DiscreteSlider) itemView.findViewById(R.id.Recycler_slider_light_discreteSlider);
+            //lightState = (TextView) itemView.findViewById(R.id.Recycler_text_lightState);
             discreteSlider.setOnDiscreteSliderChangeListener(new DiscreteSlider.OnDiscreteSliderChangeListener() {
                 @Override
                 public void onPositionChanged(int position) {

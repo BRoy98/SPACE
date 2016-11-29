@@ -34,12 +34,12 @@ import java.util.List;
 
 import io.palaima.smoothbluetooth.Device;
 
-public class mDevicesAdapter extends RecyclerView.Adapter<mDevicesAdapter.mViewHolder> {
+public class mBT_DevicesListsAdapter extends RecyclerView.Adapter<mBT_DevicesListsAdapter.mViewHolder> {
 
     private final Context mContext;
     private final List<Device> mDevices;
 
-    public mDevicesAdapter(Context context, List<Device> devices) {
+    public mBT_DevicesListsAdapter(Context context, List<Device> devices) {
         this.mContext = context;
         this.mDevices = devices;
     }

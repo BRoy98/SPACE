@@ -25,11 +25,12 @@
 
     <string name="nav_dashboard">Dashboard</string>
     <string name="nav_controls">Controls</string>
-    <string name="nav_lightC">Light Control</string>
-    <string name="nav_fanC">Fan Control</string>
-    <string name="nav_plugC">Plug Control</string>
-    <string name="nav_door_lockC">Door Lock Control</string>
-    <string name="nav_windowC">Window Control</string>
+    <string name="nav_lightC">Lights</string>
+    <string name="nav_light_dimC">Dimming Lights</string>
+    <string name="nav_fanC">Fans</string>
+    <string name="nav_plugC">Plugs</string>
+    <string name="nav_door_lockC">Door Locks</string>
+    <string name="nav_windowC">Windows</string>
     <string name="nav_device_setup">Setup</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_trouble">Troubleshooting</string>
