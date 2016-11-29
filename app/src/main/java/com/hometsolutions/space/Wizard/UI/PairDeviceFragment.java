@@ -192,10 +192,4 @@ public class PairDeviceFragment extends Fragment implements View.OnClickListener
         text.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    public static Drawable setTint(Drawable drawable, int color) {
-        final Drawable newDrawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(newDrawable, color);
-        return newDrawable;
-    }
-
 }

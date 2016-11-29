@@ -21,31 +21,15 @@
 package com.hometsolutions.space.Fragments;
 
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
-import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.hometsolutions.space.Adapters.mRoomAdapterWindowC;
 import com.hometsolutions.space.Activitys.MainActivity;
 import com.hometsolutions.space.Utils.DatabaseHelper;
-import com.dd.CircularProgressButton;
 import com.hometsolutions.space.R;
 
 
@@ -54,7 +38,6 @@ import com.hometsolutions.space.R;
  */
 public class WindowFragment extends Fragment {
 
-    private mRoomAdapterWindowC adapter;
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
     private DatabaseHelper databaseHelper;
@@ -67,21 +50,7 @@ public class WindowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View layout = inflater.inflate(R.layout.wizard_fragment_authentication, container, false);
-        final CircularProgressButton circularButton1 = (CircularProgressButton) layout.findViewById(R.id.btn_authenticate);
-        circularButton1.setIndeterminateProgressMode(true);
-        circularButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (circularButton1.getProgress() == 0) {
-                    circularButton1.setProgress(50);
-                } else if (circularButton1.getProgress() == 100) {
-                    circularButton1.setProgress(0);
-                } else {
-                    circularButton1.setProgress(100);
-                }
-            }
-        });
+        final View layout = inflater.inflate(R.layout.wizard_fragment_setup_port, container, false);
 
         /*sucBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,11 +87,11 @@ public class WindowFragment extends Fragment {
         return layout;
     }
 
-    /*@Override
+    @Override
     public void onHiddenChanged(boolean hidden) {
-        adapter = new mRoomAdapterWindowC(getContext(), databaseHelper.getRoomsArray());
-        recyclerView.setAdapter(adapter);
+        //adapter = new mRoomAdapterWindowC(getContext(), databaseHelper.getRoomsArray());
+        //recyclerView.setAdapter(adapter);
         //super.onHiddenChanged(hidden);
-    }*/
+    }
 
 }

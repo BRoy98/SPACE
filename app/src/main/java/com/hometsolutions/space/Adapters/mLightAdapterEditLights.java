@@ -90,8 +90,8 @@ public class mLightAdapterEditLights extends RecyclerView.Adapter<mLightAdapterE
         public mViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            NameTextView = (TextView) itemView.findViewById(R.id.Recycler_text_componrnt_edit);
-            cardCardView = (CardView) itemView.findViewById(R.id.Recycler_card_componrnt_edit);
+            NameTextView = (TextView) itemView.findViewById(R.id.Recycler_text_component_edit);
+            cardCardView = (CardView) itemView.findViewById(R.id.Recycler_card_component_edit);
             cardCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -516,10 +516,10 @@ public class MainActivity extends AppCompatActivity
                                 new SecondaryDrawerItem().withName(R.string.nav_fanC).withIdentifier(202).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_toys))
                                         .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_toys).colorRes(R.color.colorAccent)),
                                 new SecondaryDrawerItem().withName(R.string.nav_plugC).withIdentifier(203).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_power))
-                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_power).colorRes(R.color.colorAccent)),
-                                new SecondaryDrawerItem().withName(R.string.nav_windowC).withIdentifier(204).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture))
+                                        .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_power).colorRes(R.color.colorAccent))
+                                /*new SecondaryDrawerItem().withName(R.string.nav_windowC).withIdentifier(204).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture))
                                         .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_picture_in_picture).colorRes(R.color.colorAccent))
-                                /*new SecondaryDrawerItem().withName(R.string.nav_door_lockC).withIdentifier(205).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_vpn_key))
+                                new SecondaryDrawerItem().withName(R.string.nav_door_lockC).withIdentifier(205).withLevel(2).withIcon(new IconDrawable(this, MaterialIcons.md_vpn_key))
                                         .withSelectedIcon(new IconDrawable(this, MaterialIcons.md_vpn_key).colorRes(R.color.colorAccent))*/
                         ),
                         new PrimaryDrawerItem().withName(R.string.nav_device_setup).withIdentifier(3).withIcon(new IconDrawable(this, MaterialIcons.md_edit))
@@ -601,6 +601,7 @@ public class MainActivity extends AppCompatActivity
         lnc = new LightControlNextFragment(MainActivity.this);
         fc = new FanControlFragment(MainActivity.this);
         wf = new WindowFragment(MainActivity.this);
+        connectionFragment(true);
         hideAllFragment();
         dashboardFragment(true);
         drawerSelected = 1;

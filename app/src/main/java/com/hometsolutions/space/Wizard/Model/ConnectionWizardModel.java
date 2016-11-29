@@ -23,9 +23,7 @@
 package com.hometsolutions.space.Wizard.Model;
 
 import com.hometsolutions.space.Activitys.NewConnectionActivity;
-import com.hometsolutions.space.Wizard.UI.AuthenticationPage;
-import com.hometsolutions.space.Wizard.UI.DisplayNamePage;
-import com.hometsolutions.space.Wizard.UI.PairDevicePage;
+import com.hometsolutions.space.Wizard.UI.*;
 import com.tech.freak.wizardpager.model.AbstractWizardModel;
 import com.tech.freak.wizardpager.model.BranchPage;
 import com.tech.freak.wizardpager.model.PageList;
@@ -48,7 +46,8 @@ public class ConnectionWizardModel extends AbstractWizardModel {
                         .addBranch("Setup New Device",
                                 new DisplayNamePage(this, "Display Name").setRequired(true),
                                 new PairDevicePage(this, "Pair and Connect").setRequired(true),
-                                new AuthenticationPage(this, "Authenticate").setRequired(true).setRequired(true)
+                                new AuthenticationPage(this, "Authenticate").setRequired(true),
+                                new SetupPortPage(this, "Setup Ports").setRequired(true).setRequired(true)
                         )
 
                         .addBranch("Add Existing Device",

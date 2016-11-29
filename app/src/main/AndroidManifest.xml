@@ -14,13 +14,19 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activitys.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
-            android:name=".Activitys.SplashActivityFirstLaunch"
-            android:screenOrientation="portrait"></activity>
+            android:name="Activitys.SplashActivityFirstLaunch"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".Activitys.SplashActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity android:name=".LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activitys.EditComponentsActivity"></activity>
-        <activity android:name=".Activitys.NewConnectionActivity"></activity>
+        <activity android:name=".Activitys.EditComponentsActivity">
+
+        </activity>
+        <activity android:name=".Activitys.NewConnectionActivity">
+
+        </activity>
     </application>
 
 </manifest>
